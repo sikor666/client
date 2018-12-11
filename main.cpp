@@ -21,6 +21,25 @@ void dg_cli(FILE *fp, int sockfd, const SA *pservaddr, socklen_t servlen)
     }
 }
 
+void dg_conn_cli(FILE *fp, int sockfd, const SA *pservaddr, socklen_t servlen)
+{
+    int		n;
+    char	sendline[MAXLINE], recvline[MAXLINE + 1];
+
+    Connect(sockfd, (SA *)pservaddr, servlen);
+
+    while (Fgets(sendline, MAXLINE, fp) != NULL) {
+
+        Send(sockfd, sendline, strlen(sendline), 0);
+
+        n = Recv(sockfd, recvline, MAXLINE, 0);
+
+        recvline[n] = 0;	/* null terminate */
+        Fputs(recvline, stdout);
+    }
+}
+
+
 int main(int argc, char **argv)
 {
 #if defined _WIN32
@@ -45,7 +64,7 @@ int main(int argc, char **argv)
 
     sockfd = Udp_client("127.0.0.1", "9877", (SA **)&sa, &salen);
 
-    dg_cli(stdin, sockfd, sa, salen);
+    dg_conn_cli(stdin, sockfd, sa, salen);
 
 #if defined _WIN32
     WSACleanup();
