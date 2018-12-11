@@ -11,4 +11,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_executable(client main.cpp wrapsock.h udp_client.h wrapstdio.h)
 
 # Add link libraries
+if(CMAKE_SYSTEM_NAME MATCHES "Windows")
 target_link_libraries(client LINK_PRIVATE Ws2_32)
+endif()

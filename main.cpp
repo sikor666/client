@@ -23,6 +23,7 @@ void dg_cli(FILE *fp, int sockfd, const SA *pservaddr, socklen_t servlen)
 
 int main(int argc, char **argv)
 {
+#if defined _WIN32
     // Initialize Winsock
     WSADATA wsaData;
 
@@ -31,6 +32,7 @@ int main(int argc, char **argv)
         printf("WSAStartup failed: %d\n", iResult);
         return 1;
     }
+#endif
 
     int					sockfd;
     socklen_t			salen;
@@ -45,7 +47,9 @@ int main(int argc, char **argv)
 
     dg_cli(stdin, sockfd, sa, salen);
 
+#if defined _WIN32
     WSACleanup();
+#endif
 
     exit(0);
 }
