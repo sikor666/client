@@ -5,12 +5,7 @@ project(client)
 # Setting the C++ standard directly
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_EXTENSIONS ON)
 
 # Add the executable
-add_executable(client main.cpp wrapsock.h udp_client.h wrapstdio.h)
-
-# Add link libraries
-if(CMAKE_SYSTEM_NAME MATCHES "Windows")
-target_link_libraries(client LINK_PRIVATE Ws2_32)
-endif()
+add_executable(client main.cpp)
