@@ -5,6 +5,14 @@
 #include <thread>
 #include <vector>
 
+#include <experimental/simd>
+
+namespace stdx = std::experimental;
+
+using floatv  = stdx::native_simd<float>;
+using doublev = stdx::rebind_simd_t<double, floatv>;
+using intv    = stdx::rebind_simd_t<int, floatv>;
+
 int main(int argc, char **argv)
 {
     auto n = std::thread::hardware_concurrency();
