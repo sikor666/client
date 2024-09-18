@@ -8,4 +8,4 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ON)
 
 # Add the executable
-add_executable(client main.cpp)
+add_executable(client client.cpp)
