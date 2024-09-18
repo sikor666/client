@@ -1,10 +1,62 @@
 #include <climits>
 #include <fstream>
 #include <iostream>
+#include <set>
 #include <thread>
 #include <vector>
 
-std::string load(const std::string & filename)
+int main(int argc, char **argv)
+{
+    auto n = std::thread::hardware_concurrency();
+    std::cout << n << " concurrent threads are supported.\n";
+
+    // seek to the end of stream immediately after open
+    std::ifstream ifs{"data.txt", std::ios::binary | std::ios::ate};
+
+    if (not ifs.is_open())
+        throw std::runtime_error("Stream hasn't an associated file");
+
+    if (not ifs.good())
+        throw std::runtime_error("Error has occurred or I/O operations aren't available");
+
+    auto fend = ifs.tellg();
+    std::cout << "end: " << fend << "\n";
+
+    ifs.seekg(0, std::ios_base::beg);
+
+    auto fbeg = ifs.tellg();
+    std::cout << "beg: " << fbeg << "\n";
+
+    std::set<std::string> collection;
+
+    while (not ifs.eof())
+    {
+        std::string word;
+        ifs >> word;
+
+        std::cout << word.size() << " " << (word.empty() ? "empty" : "full") << " " << word << "\n";
+
+        if (not word.empty())
+            collection.emplace(word);
+    }
+
+    // std::string content{std::istreambuf_iterator<char>{ifs}, std::istreambuf_iterator<char>{}};
+    // std::cout << content.size() << " " << content << "\n";
+
+    // std::string content0;
+    // std::string content1;
+    // ifs >> content0;
+    // ifs >> content1;
+
+    // std::cout << content0.size() << " " << content0 << "\n";
+    // std::cout << content1.size() << " " << content1 << "\n";
+
+    std::cout << "\n" << collection.size() <<" bye!\n";
+
+    return 0;
+}
+
+/* std::string load(const std::string & filename)
 {
   // Open the file
   std::FILE *fp = std::fopen(filename.c_str(), "rb");
@@ -50,31 +102,6 @@ std::string load(const std::string & filename)
 int main(void)
 {
     std::cout << load("data.txt");
-}
-
-/* int main(int argc, char **argv)
-{
-    unsigned int n = std::thread::hardware_concurrency();
-    std::cout << n << " concurrent threads are supported.\n";
-
-    std::ifstream ifs{"data.txt"};
-
-    ifs.seekg(0, std::ios_base::end);
-
-    std::cout << ifs.tellg() << "\n";
-
-    ifs.seekg(0, std::ios_base::beg);
-
-    std::cout << ifs.tellg() << "\n";
-
-    std::string content;
-    content.assign(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
-
-    std::cout << content.size() << " " << content << "\n";
-
-    std::cout << (content[0] == '\n' ? "NL" : "DP") << "\n";
-
-    return 0;
 } */
 
 /* #include <iostream>
