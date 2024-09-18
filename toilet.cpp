@@ -1,11 +1,9 @@
-#include <error.h>
 #include <fcntl.h>
 #include <unistd.h>
 
 #include <cctype>
 #include <cerrno>
 #include <climits>
-#include <cstdio>
 
 #include <chrono>
 #include <iostream>
@@ -18,7 +16,7 @@ static bool wc_isspace[UCHAR_MAX + 1];
    input) that is open on descriptor FD.  *FSTATUS is its status.
    CURRENT_POS is the current file offset if known, negative if unknown.
    Return true if successful.  */
-static bool wc(int fd, char const * file_x, off_t current_pos)
+static void wc(int fd, char const * file)
 {
     int err = 0;
     char buf[IO_BUFSIZE + 1];
@@ -64,31 +62,10 @@ static bool wc(int fd, char const * file_x, off_t current_pos)
         } while (--bytes_read);
     }
 
-    printf("%ld\n %s\n", words, file_x);
+    std::cout << words << " " << file << "\n";
 
     if (err)
-        error(0, err, "%s", file_x);
-    return !err;
-}
-
-static bool wc_file(char const * file)
-{
-    int fd = open(file, O_RDONLY);
-    if (fd == -1)
-    {
-        error(0, errno, "%s", file);
-        return false;
-    }
-    else
-    {
-        bool ok = wc(fd, file, 0);
-        if (close(fd) != 0)
-        {
-            error(0, errno, "%s", file);
-            return false;
-        }
-        return ok;
-    }
+        throw std::runtime_error("File read error");
 }
 
 int main(int argc, char ** argv)
@@ -96,16 +73,23 @@ int main(int argc, char ** argv)
     for (int i = 0; i <= UCHAR_MAX; i++)
         wc_isspace[i] = isspace(i);
 
-    bool ok = true;
+    char const * file = argv[1];
+
+    int fd = open(file, O_RDONLY);
+    if (fd == -1)
+        throw std::runtime_error("File open error");
 
     const auto start = std::chrono::steady_clock::now();
 
-    ok &= wc_file(argv[1]);
+    wc(fd, file);
 
     const auto stop = std::chrono::steady_clock::now();
     const auto time = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
 
-    std::cout << "\n" << "time: " << static_cast<double>(time) / 1000000.0 << " s\n";
+    std::cout << "time: " << static_cast<double>(time) / 1000000.0 << " s\n";
 
-    return ok ? 0 : 1;
+    if (close(fd) != 0)
+        throw std::runtime_error("File close error");
+
+    return 0;
 }
