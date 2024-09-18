@@ -1,16 +1,10 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#include <cctype>
-#include <cerrno>
-#include <climits>
-
 #include <chrono>
 #include <iostream>
 
 constexpr auto IO_BUFSIZE = 256 * 1024;
-
-static bool wc_isspace[UCHAR_MAX + 1];
 
 /* Count words.  FILE_X is the name of the file (or null for standard
    input) that is open on descriptor FD.  *FSTATUS is its status.
@@ -54,9 +48,8 @@ static void wc(int fd, char const * file)
                 case '\v': in_word = false; break;
 
                 default:
-                    bool in_word2 = !wc_isspace[c];
-                    words += !in_word & in_word2;
-                    in_word = in_word2;
+                    words += not in_word;
+                    in_word = true;
                     break;
             }
         } while (--bytes_read);
@@ -70,9 +63,6 @@ static void wc(int fd, char const * file)
 
 int main(int argc, char ** argv)
 {
-    for (int i = 0; i <= UCHAR_MAX; i++)
-        wc_isspace[i] = isspace(i);
-
     char const * file = argv[1];
 
     int fd = open(file, O_RDONLY);
