@@ -58,7 +58,7 @@ int main(int argc, char **argv)
         std::string word;
         ifs >> word;
 
-        std::cout << word.size() << " " << (word.empty() ? "empty" : "full") << " " << word << "\n";
+        // std::cout << word.size() << " " << (word.empty() ? "empty" : "full") << " " << word << "\n";
 
         if (not word.empty())
             collection.emplace(word);
@@ -67,7 +67,7 @@ int main(int argc, char **argv)
     const auto stop = std::chrono::steady_clock::now();
     const auto time = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
 
-    std::cout << "\n" << collection.size() << " time: " << time << " us\n";
+    std::cout << "\n" << collection.size() << " time: " << static_cast<double>(time) / 1000000.0 << " s\n";
 
     return 0;
 }
