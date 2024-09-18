@@ -2,23 +2,33 @@
 #include <iostream>
 #include <string>
  
-int main()
+int main(int argc, char **argv)
 {
-    std::string filename = "Test.b";
+    if (argc != 2)
     {
-        std::ofstream ostrm(filename, std::ios::binary);
-        double d = 3.14;
-        ostrm.write(reinterpret_cast<char*>(&d), sizeof d); // binary output
-        ostrm << 123 << "abc" << '\n';                      // text output
-    }
- 
-    // read back
-    std::ifstream istrm(filename, std::ios::binary);
-    double d;
-    istrm.read(reinterpret_cast<char*>(&d), sizeof d);
-    int n;
-    std::string s;
-    istrm >> n >> s;
-    std::cout << " read back: " << d << ' ' << n << ' ' << s << '\n';
-}
+        std::cout << "Usage: " << argv[0] << " [filename] \n";
 
+        return 0;
+    }
+
+    std::string filename = argv[1];
+    std::ofstream ostrm(filename, std::ios::trunc | std::ios::binary);
+
+    if (not ostrm.is_open())
+        throw std::runtime_error("Stream hasn't an associated file");
+
+    if (not ostrm.good())
+        throw std::runtime_error("Error has occurred or I/O operations aren't available");
+
+    ostrm << "abc ";
+    ostrm << "tomek ";
+    ostrm << "jest ";
+    ostrm << "pan";
+
+    for (char i = 'a'; i <= 'z'; i++)
+    {
+        std::cout << i << " ";
+    }
+
+    return 0;
+}
