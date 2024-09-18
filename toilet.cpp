@@ -7,6 +7,9 @@
 #include <climits>
 #include <cstdio>
 
+#include <chrono>
+#include <iostream>
+
 constexpr auto IO_BUFSIZE = 256 * 1024;
 
 static bool wc_isspace[UCHAR_MAX + 1];
@@ -95,7 +98,14 @@ int main(int argc, char ** argv)
 
     bool ok = true;
 
+    const auto start = std::chrono::steady_clock::now();
+
     ok &= wc_file(argv[1]);
+
+    const auto stop = std::chrono::steady_clock::now();
+    const auto time = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
+
+    std::cout << "\n" << "time: " << static_cast<double>(time) / 1000000.0 << " s\n";
 
     return ok ? 0 : 1;
 }
