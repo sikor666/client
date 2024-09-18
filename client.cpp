@@ -15,6 +15,20 @@ using intv    = stdx::rebind_simd_t<int, floatv>;
 
 int main(int argc, char **argv)
 {
+    if (argc != 2)
+    {
+        std::cout << "Usage: " << argv[0] << " [filename] \n";
+
+        return 0;
+    }
+
+    std::cout << argc << "\n";
+
+    while (argc > 0)
+    {
+        std::cout << argv[--argc] << "\n";
+    }
+
     auto n = std::thread::hardware_concurrency();
     std::cout << n << " concurrent threads are supported.\n";
 
