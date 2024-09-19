@@ -1,89 +1,53 @@
 #include "WordsCounter.h"
 
 #include <iostream>
-#include <vector>
 
-constexpr auto BUFFER_SIZE = 256 * 1024;
-
-WordsCounter::WordsCounter(std::ifstream & istrm)
-    : inWord{false}
-    , numWords{0}
+Counter::Counter(Words & words, FILE * stream, long origin, long offset)
+    : words{words}
+    , offset{offset}
+    , inWord{false}
 {
-    std::vector<char> buffer(BUFFER_SIZE + 1);
-    std::string word;
-    std::streamsize bytes = 0;
+    buffer.resize(offset + 1);
 
-    for (std::streamsize bytesRead; bytesRead = istrm.readsome(&buffer[0], BUFFER_SIZE);)
-    {
-        bytes += bytesRead;
+    std::fseek(stream, origin, SEEK_SET);
+    // std::fread(&buffer[0], 1, offset, stream);
 
-        const auto * ptr = buffer.data();
-        do
-        {
-            unsigned char c = *ptr++;
-            switch (c)
-            {
-                case '\n':
-                case ' ':
-                    inWord = false;
-                    // std::cout << word.size() << " " << word << "\n";
-                    // uniqueWords.insert(word);
-                    word.clear();
-                    break;
-
-                default:
-                    numWords += not inWord;
-                    inWord = true;
-                    word += c;
-                    break;
-            }
-        } while (--bytesRead);
-    }
-
-    std::cout << "[bytes: " << bytes << "]\n";
+    std::cout << "[bytes: " << std::fread(&buffer[0], 1, offset, stream) << "] ";
 }
 
-WordsCounter::WordsCounter(FILE * stream, long origin, long offset)
-    : inWord{false}
-    , numWords{0}
+void Counter::operator()()
 {
-    std::vector<char> buffer(BUFFER_SIZE + 1);
+    size_t number = 0;
     std::string word;
-    std::streamsize bytes = 0;
+    std::unordered_set<std::string> data;
 
-    // std::fseek(stream, 16, SEEK_SET);
-    std::fseek(stream, 0, SEEK_END); // seek to end
-    std::cout << "[size: " << std::ftell(stream) << "]\n";
-    std::fseek(stream, 0, SEEK_SET); // seek to start
-
-    for (std::streamsize bytesRead; bytesRead = std::fread(&buffer[0], 1, BUFFER_SIZE, stream);)
+    const auto * ptr = &buffer[0];
+    do
     {
-        bytes += bytesRead;
-
-        const auto * ptr = buffer.data();
-        do
+        unsigned char c = *ptr++;
+        switch (c)
         {
-            unsigned char c = *ptr++;
-            switch (c)
-            {
-                case '\n':
-                case ' ':
-                    inWord = false;
-                    // std::cout << word.size() << " " << word << "\n";
-                    uniqueWords.insert(word);
-                    word.clear();
-                    break;
+            case '\t':
+            case '\n':
+            case ' ':
+                inWord = false;
+                if (not word.empty())
+                    data.insert(word);
+                word.clear();
+                break;
 
-                default:
-                    numWords += not inWord;
-                    inWord = true;
-                    word += c;
-                    break;
-            }
-        } while (--bytesRead);
-    }
+            default:
+                number += not inWord;
+                inWord = true;
+                word += c;
+                break;
+        }
+    } while (--offset);
 
-    std::cout << "[bytes: " << bytes << "]\n";
+    words.numWords += number;
+    words.insert(data);
+
+    std::cout << "Done\n";
 }
 
 // text.txt

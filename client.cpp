@@ -64,7 +64,7 @@ int main(int argc, char **argv)
         if (not word.empty())
         {
             number++;
-            // collection.emplace(word);
+            collection.emplace(word);
         }
     }
 

@@ -1,20 +1,57 @@
 #pragma once
 
-#include <fstream>
+#include <atomic>
+#include <iostream>
+#include <mutex>
+#include <queue>
+#include <string>
 #include <unordered_set>
+#include <vector>
 
-class WordsCounter
+constexpr long PAGE_SIZE = 256 * 1024 * 1024;
+
+class Words
 {
 public:
-    WordsCounter(std::ifstream & istrm);
-    WordsCounter(FILE * stream, long origin, long offset);
+    Words()
+        : numWords{0}
+    {
+    }
 
-    size_t number() const noexcept { return numWords; }
+    void insert(std::unordered_set<std::string> & words)
+    {
+        // numWords += words.size();
+
+        std::lock_guard<std::mutex> guard(mutexWords);
+        uniqueWords.insert(words.begin(), words.end());
+    }
+
+    void print()
+    {
+        for (const auto & word : uniqueWords)
+            std::cout << "[" << word << "]\n";
+    }
+
+    size_t number() const noexcept { return numWords.load(); }
     size_t unique() const noexcept { return uniqueWords.size(); }
 
-private:
-    bool inWord;
-    size_t numWords;
+    std::atomic<size_t> numWords;
 
+private:
+    std::mutex mutexWords;
     std::unordered_set<std::string> uniqueWords;
+};
+
+class Counter
+{
+public:
+    Counter(Words & words, FILE * stream, long origin, long offset);
+
+    void operator()();
+
+private:
+    Words & words;
+    long offset;
+    bool inWord;
+    std::vector<char> buffer;
 };
