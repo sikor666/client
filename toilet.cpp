@@ -2,6 +2,7 @@
 #include "FileReader.h"
 
 #include <chrono>
+#include <fstream>
 #include <iostream>
 
 constexpr auto IO_BUFSIZE = 256 * 1024;
@@ -10,23 +11,16 @@ constexpr auto IO_BUFSIZE = 256 * 1024;
    input) that is open on descriptor FD.  *FSTATUS is its status.
    CURRENT_POS is the current file offset if known, negative if unknown.
    Return true if successful.  */
-static void wc(std::FILE * fp, char const * file)
+static void wc(std::ifstream & istrm, char const * file)
 {
-    int err = 0;
     char buf[IO_BUFSIZE + 1];
     long int words = 0;
 
     bool in_word = false;
     long int linepos = 0;
 
-    for (size_t bytes_read; (bytes_read = std::fread(buf, 1, IO_BUFSIZE, fp));)
+    for (std::streamsize bytes_read; bytes_read = istrm.readsome(buf, IO_BUFSIZE);)
     {
-        if (bytes_read < 0)
-        {
-            err = errno;
-            break;
-        }
-
         char const * p = buf;
         do
         {
@@ -56,9 +50,6 @@ static void wc(std::FILE * fp, char const * file)
     }
 
     std::cout << words << " " << file << "\n";
-
-    if (err)
-        throw std::runtime_error("File read error");
 }
 
 int main(int argc, char ** argv)
@@ -69,26 +60,25 @@ int main(int argc, char ** argv)
         return 0;
     }
 
-    char const * file = argv[1];
+    // FileReader fileReader(argv[1]);
+    // UniqueWordsCounter uniqueWordsCounter;
 
-    auto * fp = std::fopen(file, "rb");
-    if (fp == nullptr)
-        throw std::runtime_error("File open error");
+    std::ifstream istrm{argv[1], std::ios::binary};
 
-    FileReader fileReader(argv[1]);
-    UniqueWordsCounter uniqueWordsCounter;
+    if (not istrm.is_open())
+        throw std::runtime_error("Stream hasn't an associated file");
+
+    if (not istrm.good())
+        throw std::runtime_error("Error has occurred or I/O operations aren't available");
 
     const auto start = std::chrono::steady_clock::now();
 
-    wc(fp, file);
+    wc(istrm, argv[1]);
 
     const auto stop = std::chrono::steady_clock::now();
     const auto time = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
 
     std::cout << "time: " << static_cast<double>(time) / 1000000.0 << " s\n";
-
-    if (std::fclose(fp) != 0)
-        throw std::runtime_error("File close error");
 
     return 0;
 }

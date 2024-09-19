@@ -8,6 +8,8 @@ public:
     FileReader(const std::string & filename);
     ~FileReader();
 
+    size_t read();
+
 private:
-    /* data */
+    FILE * file;
 };
