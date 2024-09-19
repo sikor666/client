@@ -1,11 +1,19 @@
 #pragma once
 
+#include <fstream>
+#include <unordered_set>
+
 class UniqueWordsCounter
 {
 public:
-    UniqueWordsCounter(/* args */);
-    ~UniqueWordsCounter();
+    UniqueWordsCounter(std::ifstream & istrm);
+
+    size_t all() const noexcept { return numWords; }
+    size_t unique() const noexcept { return uniqueWords.size(); }
 
 private:
-    /* data */
+    bool inWord;
+    size_t numWords;
+
+    std::unordered_set<std::string> uniqueWords;
 };
