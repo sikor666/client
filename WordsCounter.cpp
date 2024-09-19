@@ -51,6 +51,8 @@ WordsCounter::WordsCounter(FILE * file)
     std::string word;
     std::streamsize bytes = 0;
 
+    // std::fseek(file, 16, SEEK_SET);
+
     for (std::streamsize bytesRead; bytesRead = std::fread(&buffer[0], 1, BUFFER_SIZE, file);)
     {
         bytes += bytesRead;
@@ -64,8 +66,8 @@ WordsCounter::WordsCounter(FILE * file)
                 case '\n':
                 case ' ':
                     inWord = false;
-                    // std::cout << word.size() << " " << word << "\n";
-                    // uniqueWords.insert(word);
+                    std::cout << word.size() << " " << word << "\n";
+                    uniqueWords.insert(word);
                     word.clear();
                     break;
 
