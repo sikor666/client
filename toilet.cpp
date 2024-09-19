@@ -3,49 +3,47 @@
 #include <chrono>
 #include <fstream>
 #include <iostream>
+#include <unordered_set>
+#include <vector>
 
 constexpr auto IO_BUFSIZE = 256 * 1024;
 
 /// Count words
 static void wc(std::ifstream & istrm, char const * file)
 {
-    char buf[IO_BUFSIZE + 1];
-    long int words = 0;
+    size_t words = 0;
+    bool inWord = false;
 
-    bool in_word = false;
-    long int linepos = 0;
+    std::vector<char> buf(IO_BUFSIZE + 1);
+    std::string str;
+    std::unordered_set<std::string> cache;
 
-    for (std::streamsize bytes_read; bytes_read = istrm.readsome(buf, IO_BUFSIZE);)
+    for (std::streamsize bytesRead; bytesRead = istrm.readsome(&buf[0], IO_BUFSIZE);)
     {
-        char const * p = buf;
+        const auto * ptr = buf.data();
         do
         {
-            unsigned char c = *p++;
+            unsigned char c = *ptr++;
             switch (c)
             {
-                case '\r':
-                case '\f':
-                    linepos = 0;
-                    in_word = false;
+                case '\n':
+                case ' ':
+                    inWord = false;
+                    // std::cout << str.size() << " " << str << "\n";
+                    cache.insert(str);
+                    str.clear();
                     break;
-
-                case '\t':
-                    linepos += 8 - (linepos % 8);
-                    in_word = false;
-                    break;
-
-                case ' ': linepos++;
-                case '\v': in_word = false; break;
 
                 default:
-                    words += not in_word;
-                    in_word = true;
+                    words += not inWord;
+                    inWord = true;
+                    str += c;
                     break;
             }
-        } while (--bytes_read);
+        } while (--bytesRead);
     }
 
-    std::cout << words << " " << file << "\n";
+    std::cout << "[words: " << words << "] [unique: " << cache.size() << "] [file: " << file << "]\n";
 }
 
 int main(int argc, char ** argv)
@@ -73,7 +71,7 @@ int main(int argc, char ** argv)
     const auto stop = std::chrono::steady_clock::now();
     const auto time = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
 
-    std::cout << "time: " << static_cast<double>(time) / 1000000.0 << " s\n";
+    std::cout << "[time: " << static_cast<double>(time) / 1000000.0 << " s]\n";
 
     return 0;
 }
