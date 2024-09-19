@@ -7,7 +7,7 @@ class WordsCounter
 {
 public:
     WordsCounter(std::ifstream & istrm);
-    WordsCounter(FILE * file);
+    WordsCounter(FILE * stream, long origin, long offset);
 
     size_t number() const noexcept { return numWords; }
     size_t unique() const noexcept { return uniqueWords.size(); }

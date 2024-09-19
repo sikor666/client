@@ -43,7 +43,7 @@ WordsCounter::WordsCounter(std::ifstream & istrm)
     std::cout << "[bytes: " << bytes << "]\n";
 }
 
-WordsCounter::WordsCounter(FILE * file)
+WordsCounter::WordsCounter(FILE * stream, long origin, long offset)
     : inWord{false}
     , numWords{0}
 {
@@ -51,12 +51,12 @@ WordsCounter::WordsCounter(FILE * file)
     std::string word;
     std::streamsize bytes = 0;
 
-    // std::fseek(file, 16, SEEK_SET);
-    std::fseek(file, 0, SEEK_END); // seek to end
-    std::cout << "[size: " << std::ftell(file) << "]\n";
-    std::fseek(file, 0, SEEK_SET); // seek to start
+    // std::fseek(stream, 16, SEEK_SET);
+    std::fseek(stream, 0, SEEK_END); // seek to end
+    std::cout << "[size: " << std::ftell(stream) << "]\n";
+    std::fseek(stream, 0, SEEK_SET); // seek to start
 
-    for (std::streamsize bytesRead; bytesRead = std::fread(&buffer[0], 1, BUFFER_SIZE, file);)
+    for (std::streamsize bytesRead; bytesRead = std::fread(&buffer[0], 1, BUFFER_SIZE, stream);)
     {
         bytes += bytesRead;
 

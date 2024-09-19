@@ -26,7 +26,7 @@ int main(int argc, char ** argv)
     const auto start = std::chrono::steady_clock::now();
 
     // WordsCounter wordsCounter{istrm};
-    WordsCounter wordsCounter{file.get()};
+    WordsCounter wordsCounter{file.get(), 0, 16};
 
     const auto stop = std::chrono::steady_clock::now();
     const auto time = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
