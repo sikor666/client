@@ -47,3 +47,45 @@ WordsCounter::WordsCounter(std::ifstream & istrm)
 
     std::cout << "[bytes: " << bytes << "]\n";
 }
+
+WordsCounter::WordsCounter(const std::string & filename)
+    : inWord{false}
+    , numWords{0}
+{
+    auto * file = std::fopen(filename.c_str(), "rb");
+
+    std::vector<char> buffer(BUFFER_SIZE + 1);
+    std::string word;
+    std::streamsize bytes = 0;
+
+    for (std::streamsize bytesRead; bytesRead = std::fread(&buffer[0], 1, BUFFER_SIZE, file);)
+    {
+        bytes += bytesRead;
+
+        const auto * ptr = buffer.data();
+        do
+        {
+            unsigned char c = *ptr++;
+            switch (c)
+            {
+                case '\n':
+                case ' ':
+                    inWord = false;
+                    // std::cout << word.size() << " " << word << "\n";
+                    // uniqueWords.insert(word);
+                    word.clear();
+                    break;
+
+                default:
+                    numWords += not inWord;
+                    inWord = true;
+                    word += c;
+                    break;
+            }
+        } while (--bytesRead);
+    }
+
+    std::cout << "[bytes: " << bytes << "]\n";
+
+    std::fclose(file);
+}
