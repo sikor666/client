@@ -1,8 +1,8 @@
 #include <climits>
 #include <fstream>
 #include <iostream>
-#include <set>
 #include <thread>
+#include <unordered_set>
 #include <vector>
 
 #include <experimental/simd>
@@ -33,7 +33,7 @@ int main(int argc, char **argv)
     std::cout << n << " concurrent threads are supported.\n";
 
     // seek to the end of stream immediately after open
-    std::ifstream ifs{"data.txt", std::ios::binary | std::ios::ate};
+    std::ifstream ifs{argv[1], std::ios::binary | std::ios::ate};
 
     if (not ifs.is_open())
         throw std::runtime_error("Stream hasn't an associated file");
@@ -49,7 +49,8 @@ int main(int argc, char **argv)
     auto fbeg = ifs.tellg();
     std::cout << "beg: " << fbeg << "\n";
 
-    std::set<std::string> collection;
+    std::unordered_set<std::string> collection;
+    size_t number = 0;
 
     const auto start = std::chrono::steady_clock::now();
 
@@ -61,13 +62,17 @@ int main(int argc, char **argv)
         // std::cout << word.size() << " " << (word.empty() ? "empty" : "full") << " " << word << "\n";
 
         if (not word.empty())
-            collection.emplace(word);
+        {
+            number++;
+            // collection.emplace(word);
+        }
     }
 
     const auto stop = std::chrono::steady_clock::now();
     const auto time = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
 
-    std::cout << "\n" << collection.size() << " time: " << static_cast<double>(time) / 1000000.0 << " s\n";
+    std::cout << "\n[unique: " << collection.size() << "] [number: " << number << "] [file: " << argv[1]
+              << "] [time: " << static_cast<double>(time) / 1000000.0 << " s]\n";
 
     return 0;
 }

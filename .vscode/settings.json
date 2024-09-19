@@ -71,6 +71,7 @@
         "format": "cpp",
         "text_encoding": "cpp",
         "__nullptr": "cpp",
-        "simd": "cpp"
+        "simd": "cpp",
+        "unordered_set": "cpp"
     }
 }
