@@ -3,6 +3,7 @@
 #include <chrono>
 #include <iostream>
 #include <memory>
+#include <thread>
 
 int main(int argc, char ** argv)
 {
@@ -11,6 +12,9 @@ int main(int argc, char ** argv)
         std::cout << "Usage: " << argv[0] << " [filename] \n";
         return 0;
     }
+
+    auto n = std::thread::hardware_concurrency();
+    std::cout << "[threads: " << n << "]\n";
 
     // std::ifstream istrm{argv[1], std::ios::binary};
     // if (not istrm.is_open())
