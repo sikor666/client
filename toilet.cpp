@@ -2,6 +2,7 @@
 
 #include <chrono>
 #include <iostream>
+#include <memory>
 
 int main(int argc, char ** argv)
 {
@@ -12,17 +13,16 @@ int main(int argc, char ** argv)
     }
 
     // std::ifstream istrm{argv[1], std::ios::binary};
-
     // if (not istrm.is_open())
     //     throw std::runtime_error("Stream hasn't an associated file");
-
     // if (not istrm.good())
     //     throw std::runtime_error("Error has occurred or I/O operations aren't available");
 
+    const auto file = std::unique_ptr<FILE, int (*)(FILE *)>{std::fopen(argv[1], "rb"), std::fclose};
     const auto start = std::chrono::steady_clock::now();
 
     // WordsCounter wordsCounter{istrm};
-    WordsCounter wordsCounter{argv[1]};
+    WordsCounter wordsCounter{file.get()};
 
     const auto stop = std::chrono::steady_clock::now();
     const auto time = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();

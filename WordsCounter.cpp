@@ -17,11 +17,6 @@ WordsCounter::WordsCounter(std::ifstream & istrm)
     {
         bytes += bytesRead;
 
-        // std::cout << bytesRead << "\n"; 35289717
-        // 3200000000
-        // 3200000000
-        // 32000000
-
         const auto * ptr = buffer.data();
         do
         {
@@ -48,12 +43,10 @@ WordsCounter::WordsCounter(std::ifstream & istrm)
     std::cout << "[bytes: " << bytes << "]\n";
 }
 
-WordsCounter::WordsCounter(const std::string & filename)
+WordsCounter::WordsCounter(FILE * file)
     : inWord{false}
     , numWords{0}
 {
-    auto * file = std::fopen(filename.c_str(), "rb");
-
     std::vector<char> buffer(BUFFER_SIZE + 1);
     std::string word;
     std::streamsize bytes = 0;
@@ -86,6 +79,4 @@ WordsCounter::WordsCounter(const std::string & filename)
     }
 
     std::cout << "[bytes: " << bytes << "]\n";
-
-    std::fclose(file);
 }
