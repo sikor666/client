@@ -1,3 +1,5 @@
+#include "UniqueWordsCounter.h"
+
 #include <chrono>
 #include <iostream>
 
@@ -61,6 +63,8 @@ static void wc(std::FILE * fp, char const * file)
 int main(int argc, char ** argv)
 {
     char const * file = argv[1];
+
+    UniqueWordsCounter uwc;
 
     auto * fp = std::fopen(file, "rb");
     if (fp == nullptr)
