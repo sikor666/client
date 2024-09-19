@@ -1,6 +1,3 @@
-#include <fcntl.h>
-#include <unistd.h>
-
 #include <chrono>
 #include <iostream>
 
@@ -10,7 +7,7 @@ constexpr auto IO_BUFSIZE = 256 * 1024;
    input) that is open on descriptor FD.  *FSTATUS is its status.
    CURRENT_POS is the current file offset if known, negative if unknown.
    Return true if successful.  */
-static void wc(int fd, char const * file)
+static void wc(std::FILE * fp, char const * file)
 {
     int err = 0;
     char buf[IO_BUFSIZE + 1];
@@ -19,7 +16,7 @@ static void wc(int fd, char const * file)
     bool in_word = false;
     long int linepos = 0;
 
-    for (ssize_t bytes_read; (bytes_read = read(fd, buf, IO_BUFSIZE));)
+    for (size_t bytes_read; (bytes_read = std::fread(buf, 1, IO_BUFSIZE, fp));)
     {
         if (bytes_read < 0)
         {
@@ -65,20 +62,20 @@ int main(int argc, char ** argv)
 {
     char const * file = argv[1];
 
-    int fd = open(file, O_RDONLY);
-    if (fd == -1)
+    auto * fp = std::fopen(file, "rb");
+    if (fp == nullptr)
         throw std::runtime_error("File open error");
 
     const auto start = std::chrono::steady_clock::now();
 
-    wc(fd, file);
+    wc(fp, file);
 
     const auto stop = std::chrono::steady_clock::now();
     const auto time = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
 
     std::cout << "time: " << static_cast<double>(time) / 1000000.0 << " s\n";
 
-    if (close(fd) != 0)
+    if (std::fclose(fp) != 0)
         throw std::runtime_error("File close error");
 
     return 0;
