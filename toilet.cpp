@@ -1,4 +1,5 @@
 #include "UniqueWordsCounter.h"
+#include "FileReader.h"
 
 #include <chrono>
 #include <iostream>
@@ -64,11 +65,12 @@ int main(int argc, char ** argv)
 {
     char const * file = argv[1];
 
-    UniqueWordsCounter uwc;
-
     auto * fp = std::fopen(file, "rb");
     if (fp == nullptr)
         throw std::runtime_error("File open error");
+
+    UniqueWordsCounter uniqueWordsCounter;
+    FileReader fileReader;
 
     const auto start = std::chrono::steady_clock::now();
 
