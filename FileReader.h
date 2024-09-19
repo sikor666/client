@@ -1,9 +1,11 @@
 #pragma once
 
+#include <string>
+
 class FileReader
 {
 public:
-    FileReader(/* args */);
+    FileReader(const std::string & filename);
     ~FileReader();
 
 private:

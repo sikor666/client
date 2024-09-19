@@ -63,14 +63,20 @@ static void wc(std::FILE * fp, char const * file)
 
 int main(int argc, char ** argv)
 {
+    if (argc != 2)
+    {
+        std::cout << "Usage: " << argv[0] << " [filename] \n";
+        return 0;
+    }
+
     char const * file = argv[1];
 
     auto * fp = std::fopen(file, "rb");
     if (fp == nullptr)
         throw std::runtime_error("File open error");
 
+    FileReader fileReader(argv[1]);
     UniqueWordsCounter uniqueWordsCounter;
-    FileReader fileReader;
 
     const auto start = std::chrono::steady_clock::now();
 
