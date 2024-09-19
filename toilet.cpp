@@ -1,4 +1,4 @@
-#include "UniqueWordsCounter.h"
+#include "WordsCounter.h"
 
 #include <chrono>
 #include <iostream>
@@ -21,12 +21,12 @@ int main(int argc, char ** argv)
 
     const auto start = std::chrono::steady_clock::now();
 
-    UniqueWordsCounter uniqueWordsCounter{istrm};
+    WordsCounter wordsCounter{istrm};
 
     const auto stop = std::chrono::steady_clock::now();
     const auto time = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
 
-    std::cout << "[words: " << uniqueWordsCounter.all() << "] [unique: " << uniqueWordsCounter.unique() << "]\n";
+    std::cout << "[words: " << wordsCounter.number() << "] [unique: " << wordsCounter.unique() << "]\n";
     std::cout << "[time: " << static_cast<double>(time) / 1000000.0 << " s]\n";
 
     return 0;

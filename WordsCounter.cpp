@@ -1,11 +1,10 @@
-#include "UniqueWordsCounter.h"
+#include "WordsCounter.h"
 
-#include <unordered_set>
 #include <vector>
 
 constexpr auto BUFFER_SIZE = 256 * 1024;
 
-UniqueWordsCounter::UniqueWordsCounter(std::ifstream & istrm)
+WordsCounter::WordsCounter(std::ifstream & istrm)
     : inWord{false}
     , numWords{0}
 {

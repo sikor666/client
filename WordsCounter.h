@@ -3,12 +3,12 @@
 #include <fstream>
 #include <unordered_set>
 
-class UniqueWordsCounter
+class WordsCounter
 {
 public:
-    UniqueWordsCounter(std::ifstream & istrm);
+    WordsCounter(std::ifstream & istrm);
 
-    size_t all() const noexcept { return numWords; }
+    size_t number() const noexcept { return numWords; }
     size_t unique() const noexcept { return uniqueWords.size(); }
 
 private:
