@@ -1,5 +1,4 @@
 #include "UniqueWordsCounter.h"
-#include "FileReader.h"
 
 #include <chrono>
 #include <fstream>
@@ -7,10 +6,7 @@
 
 constexpr auto IO_BUFSIZE = 256 * 1024;
 
-/* Count words.  FILE_X is the name of the file (or null for standard
-   input) that is open on descriptor FD.  *FSTATUS is its status.
-   CURRENT_POS is the current file offset if known, negative if unknown.
-   Return true if successful.  */
+/// Count words
 static void wc(std::ifstream & istrm, char const * file)
 {
     char buf[IO_BUFSIZE + 1];
@@ -60,7 +56,6 @@ int main(int argc, char ** argv)
         return 0;
     }
 
-    // FileReader fileReader(argv[1]);
     // UniqueWordsCounter uniqueWordsCounter;
 
     std::ifstream istrm{argv[1], std::ios::binary};
