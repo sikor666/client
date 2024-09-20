@@ -12,7 +12,7 @@ set(CMAKE_CXX_EXTENSIONS ON)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/execq)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/execq/internal)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/execq)
 
 # Add executable
 add_executable(client client.cpp)
