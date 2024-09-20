@@ -47,7 +47,7 @@ core::ThreadWorker::ThreadWorker(ITaskProvider & provider)
 core::ThreadWorker::~ThreadWorker()
 {
     shutdown();
-    if (m_thread && m_thread->joinable())
+    if (m_thread and m_thread->joinable())
     {
         m_thread->join();
     }
@@ -62,7 +62,7 @@ bool core::ThreadWorker::notifyWorker()
     }
 
     m_checkNextTask = true;
-    if (!m_thread)
+    if (not m_thread)
     {
         m_thread.reset(new std::thread(&ThreadWorker::threadMain, this));
     }

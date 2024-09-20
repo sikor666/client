@@ -37,7 +37,7 @@ bool details::NotifyWorkers(const std::vector<std::unique_ptr<IThreadWorker>> & 
     for (const auto & worker : workers)
     {
         notified |= worker->notifyWorker();
-        if (notified && single)
+        if (notified and single)
         {
             return true;
         }

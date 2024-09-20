@@ -110,7 +110,7 @@ template <typename R, typename T> void core::ExecutionQueue<R, T>::cancel()
 
 template <typename R, typename T> core::Task core::ExecutionQueue<R, T>::nextTask()
 {
-    if (!hasTask())
+    if (not hasTask())
     {
         return Task();
     }
@@ -128,7 +128,7 @@ template <typename R, typename T> core::Task core::ExecutionQueue<R, T>::nextTas
             return;
         }
 
-        if (!m_hasTask)
+        if (not m_hasTask)
         {
             m_taskQueueCondition.notify_all();
         }
@@ -198,14 +198,14 @@ template <typename R, typename T> std::unique_ptr<core::QueuedObject<R, T>> core
     std::unique_ptr<QueuedObject<R, T>> object = std::move(m_taskQueue.front());
     m_taskQueue.pop();
 
-    m_hasTask = !m_taskQueue.empty();
+    m_hasTask = not m_taskQueue.empty();
 
     return object;
 }
 
 template <typename R, typename T> bool core::ExecutionQueue<R, T>::hasTask()
 {
-    if (!m_hasTask)
+    if (not m_hasTask)
     {
         return false;
     }
@@ -215,7 +215,7 @@ template <typename R, typename T> bool core::ExecutionQueue<R, T>::hasTask()
 
 template <typename R, typename T> void core::ExecutionQueue<R, T>::notifyWorkers()
 {
-    if (!m_executionPool || !m_executionPool->notifyOneWorker())
+    if (not m_executionPool or not m_executionPool->notifyOneWorker())
     {
         m_additionalWorker->notifyWorker();
     }
@@ -224,7 +224,7 @@ template <typename R, typename T> void core::ExecutionQueue<R, T>::notifyWorkers
 template <typename R, typename T> void core::ExecutionQueue<R, T>::waitAllTasks()
 {
     std::unique_lock<std::mutex> lock(m_taskQueueMutex);
-    while (m_taskRunningCount > 0 || !m_taskQueue.empty())
+    while (m_taskRunningCount > 0 or not m_taskQueue.empty())
     {
         m_taskQueueCondition.wait(lock);
     }
