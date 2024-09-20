@@ -11,7 +11,6 @@ StreamDispatcher::StreamDispatcher(const std::string & filename, WordsCollection
           // Execution function is called in parallel on the next free thread with the next object from the queue
           [](const std::atomic_bool & isCanceled, WordsCounter && object) {
               object();
-              std::cout << "done\n";
           })}
     , m_fileStream{std::unique_ptr<FILE, int (*)(FILE *)>{std::fopen(filename.c_str(), "rb"), std::fclose}}
     , m_size{std::fseek(m_fileStream.get(), 0, SEEK_END) == 0 ? std::ftell(m_fileStream.get()) : -1L}
@@ -19,8 +18,6 @@ StreamDispatcher::StreamDispatcher(const std::string & filename, WordsCollection
 {
     if (m_size < 0)
         throw std::runtime_error("Stream hasn't an associated file");
-
-    std::cout << "[size: " << m_size << "]\n";
 }
 
 void StreamDispatcher::run()
@@ -28,7 +25,6 @@ void StreamDispatcher::run()
     for (long origin = 0, offset = 0; origin < m_size; origin += offset)
     {
         offset = expand(origin + std::min(m_page, m_size - origin)) - origin;
-        std::cout << "[origin: " << origin << "] [offset: " << offset << "]\n";
 
         m_executionQueue->push(WordsCounter{m_wordsCollection, m_fileStream.get(), origin, offset});
     }
