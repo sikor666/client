@@ -1,7 +1,6 @@
 #include "ThreadWorker.h"
 
-namespace execq {
-namespace impl {
+namespace core {
 class ThreadWorker : public IThreadWorker
 {
 public:
@@ -23,10 +22,9 @@ private:
 
     ITaskProvider & m_provider;
 };
-} // namespace impl
-} // namespace execq
+} // namespace core
 
-std::shared_ptr<const execq::impl::IThreadWorkerFactory> execq::impl::IThreadWorkerFactory::defaultFactory()
+std::shared_ptr<const core::IThreadWorkerFactory> core::IThreadWorkerFactory::defaultFactory()
 {
     class ThreadWorkerFactory : public IThreadWorkerFactory
     {
@@ -41,12 +39,12 @@ std::shared_ptr<const execq::impl::IThreadWorkerFactory> execq::impl::IThreadWor
     return s_factory;
 }
 
-execq::impl::ThreadWorker::ThreadWorker(ITaskProvider & provider)
+core::ThreadWorker::ThreadWorker(ITaskProvider & provider)
     : m_provider(provider)
 {
 }
 
-execq::impl::ThreadWorker::~ThreadWorker()
+core::ThreadWorker::~ThreadWorker()
 {
     shutdown();
     if (m_thread && m_thread->joinable())
@@ -55,7 +53,7 @@ execq::impl::ThreadWorker::~ThreadWorker()
     }
 }
 
-bool execq::impl::ThreadWorker::notifyWorker()
+bool core::ThreadWorker::notifyWorker()
 {
     std::lock_guard<std::mutex> lock(m_mutex);
     if (m_checkNextTask)
@@ -74,14 +72,14 @@ bool execq::impl::ThreadWorker::notifyWorker()
     return true;
 }
 
-void execq::impl::ThreadWorker::shutdown()
+void core::ThreadWorker::shutdown()
 {
     std::lock_guard<std::mutex> lock(m_mutex);
     m_shouldQuit = true;
     m_condition.notify_one();
 }
 
-void execq::impl::ThreadWorker::threadMain()
+void core::ThreadWorker::threadMain()
 {
     while (true)
     {

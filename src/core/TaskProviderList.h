@@ -1,12 +1,11 @@
 #pragma once
 
-#include "execq/ThreadWorker.h"
+#include "ThreadWorker.h"
 
 #include <list>
 #include <mutex>
 
-namespace execq {
-namespace impl {
+namespace core {
 class TaskProviderList : public ITaskProvider
 {
 public: // ITaskProvider
@@ -22,5 +21,4 @@ private:
     TaskProviders_lt::iterator m_currentTaskProviderIt;
     std::mutex m_mutex;
 };
-} // namespace impl
-} // namespace execq
+} // namespace core

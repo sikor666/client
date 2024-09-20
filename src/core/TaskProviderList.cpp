@@ -1,7 +1,8 @@
 #include <algorithm>
 #include "TaskProviderList.h"
 
-execq::impl::Task execq::impl::TaskProviderList::nextTask()
+namespace core {
+Task TaskProviderList::nextTask()
 {
     std::lock_guard<std::mutex> lock(m_mutex);
 
@@ -26,14 +27,14 @@ execq::impl::Task execq::impl::TaskProviderList::nextTask()
     return Task();
 }
 
-void execq::impl::TaskProviderList::addProvider(ITaskProvider & provider)
+void TaskProviderList::addProvider(ITaskProvider & provider)
 {
     std::lock_guard<std::mutex> lock(m_mutex);
     m_taskProviders.push_back(&provider);
     m_currentTaskProviderIt = m_taskProviders.begin();
 }
 
-void execq::impl::TaskProviderList::removeProvider(ITaskProvider & provider)
+void TaskProviderList::removeProvider(ITaskProvider & provider)
 {
     std::lock_guard<std::mutex> lock(m_mutex);
     const auto it = std::find(m_taskProviders.begin(), m_taskProviders.end(), &provider);
@@ -43,3 +44,4 @@ void execq::impl::TaskProviderList::removeProvider(ITaskProvider & provider)
         m_currentTaskProviderIt = m_taskProviders.begin();
     }
 }
+} // namespace core

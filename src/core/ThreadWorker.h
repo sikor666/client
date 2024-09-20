@@ -6,8 +6,7 @@
 #include <mutex>
 #include <thread>
 
-namespace execq {
-namespace impl {
+namespace core {
 using Task = std::packaged_task<void()>;
 class ITaskProvider
 {
@@ -32,7 +31,6 @@ public:
 
     virtual ~IThreadWorkerFactory() = default;
 
-    virtual std::unique_ptr<impl::IThreadWorker> createWorker(impl::ITaskProvider & provider) const = 0;
+    virtual std::unique_ptr<IThreadWorker> createWorker(ITaskProvider & provider) const = 0;
 };
-} // namespace impl
-} // namespace execq
+} // namespace core

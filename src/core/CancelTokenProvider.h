@@ -4,8 +4,7 @@
 #include <memory>
 #include <mutex>
 
-namespace execq {
-namespace impl {
+namespace core {
 using CancelToken = std::shared_ptr<std::atomic_bool>;
 class CancelTokenProvider
 {
@@ -21,5 +20,4 @@ private:
     CancelToken m_currentToken = std::make_shared<std::atomic_bool>(false);
     std::mutex m_mutex;
 };
-} // namespace impl
-} // namespace execq
+} // namespace core

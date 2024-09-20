@@ -4,13 +4,13 @@
 #include <unordered_set>
 
 WordsCounter::WordsCounter(WordsCollection & wordsCollection, FILE * fileStream, long streamOrigin, long streamOffset)
-    : wordsCollection{wordsCollection}
-    , streamOffset{streamOffset}
+    : m_wordsCollection{wordsCollection}
+    , m_streamOffset{streamOffset}
 {
-    streamBuffer.resize(streamOffset + 1);
+    m_streamBuffer.resize(streamOffset + 1);
 
     std::fseek(fileStream, streamOrigin, SEEK_SET);
-    std::fread(&streamBuffer[0], 1, streamOffset, fileStream);
+    std::fread(&m_streamBuffer[0], 1, streamOffset, fileStream);
 }
 
 void WordsCounter::operator()()
@@ -21,7 +21,7 @@ void WordsCounter::operator()()
     std::string word;
     std::unordered_set<std::string> words;
 
-    const auto * ptr = &streamBuffer[0];
+    const auto * ptr = &m_streamBuffer[0];
     do
     {
         const auto chr = *ptr++;
@@ -44,8 +44,8 @@ void WordsCounter::operator()()
                 word += chr;
                 break;
         }
-    } while (--streamOffset);
+    } while (--m_streamOffset);
 
-    wordsCollection += wordsNumber;
-    wordsCollection.insert(words);
+    m_wordsCollection += wordsNumber;
+    m_wordsCollection.insert(words);
 }

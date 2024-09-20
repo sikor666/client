@@ -13,7 +13,8 @@ public:
     void operator()();
 
 private:
-    WordsCollection & wordsCollection;
-    long streamOffset;
-    std::vector<char> streamBuffer;
+    WordsCollection & m_wordsCollection;
+    long m_streamOffset;
+
+    std::vector<char> m_streamBuffer;
 };

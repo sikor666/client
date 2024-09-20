@@ -10,20 +10,18 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS ON)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/execq)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/execq)
+# Setup include directories
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/core)
 
 # Add executable
-add_executable(client client.cpp)
 add_executable(server server.cpp)
-add_executable(toilet src/main.cpp
+add_executable(counter src/main.cpp
     src/StreamDispatcher.cpp
     src/WordsCollection.cpp
     src/WordsCounter.cpp
 
-    src/execq/execq.cpp
-    src/execq/ExecutionPool.cpp
-    src/execq/TaskProviderList.cpp
-    src/execq/ThreadWorker.cpp
-    src/execq/CancelTokenProvider.cpp)
+    src/core/ExecutionFactory.cpp
+    src/core/ExecutionPool.cpp
+    src/core/TaskProviderList.cpp
+    src/core/ThreadWorker.cpp
+    src/core/CancelTokenProvider.cpp)

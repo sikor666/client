@@ -1,22 +1,23 @@
 #include "CancelTokenProvider.h"
 
-execq::impl::CancelToken execq::impl::CancelTokenProvider::token()
+namespace core {
+CancelToken CancelTokenProvider::token()
 {
     std::lock_guard<std::mutex> lock(m_mutex);
     return m_currentToken;
 }
 
-void execq::impl::CancelTokenProvider::cancel()
+void CancelTokenProvider::cancel()
 {
     cancelAndRenew(false);
 }
 
-void execq::impl::CancelTokenProvider::cancelAndRenew()
+void CancelTokenProvider::cancelAndRenew()
 {
     cancelAndRenew(true);
 }
 
-void execq::impl::CancelTokenProvider::cancelAndRenew(const bool renew)
+void CancelTokenProvider::cancelAndRenew(const bool renew)
 {
     std::lock_guard<std::mutex> lock(m_mutex);
     if (m_currentToken)
@@ -28,3 +29,4 @@ void execq::impl::CancelTokenProvider::cancelAndRenew(const bool renew)
         m_currentToken = std::make_shared<std::atomic_bool>(false);
     }
 }
+} // namespace core

@@ -1,6 +1,7 @@
 #include "ExecutionPool.h"
 
-execq::impl::ExecutionPool::ExecutionPool(const uint32_t threadCount, const IThreadWorkerFactory & workerFactory)
+namespace core {
+ExecutionPool::ExecutionPool(const uint32_t threadCount, const IThreadWorkerFactory & workerFactory)
 {
     for (uint32_t i = 0; i < threadCount; i++)
     {
@@ -8,29 +9,29 @@ execq::impl::ExecutionPool::ExecutionPool(const uint32_t threadCount, const IThr
     }
 }
 
-void execq::impl::ExecutionPool::addProvider(ITaskProvider & provider)
+void ExecutionPool::addProvider(ITaskProvider & provider)
 {
     m_providerGroup.addProvider(provider);
 }
 
-void execq::impl::ExecutionPool::removeProvider(ITaskProvider & provider)
+void ExecutionPool::removeProvider(ITaskProvider & provider)
 {
     m_providerGroup.removeProvider(provider);
 }
 
-bool execq::impl::ExecutionPool::notifyOneWorker()
+bool ExecutionPool::notifyOneWorker()
 {
     return details::NotifyWorkers(m_workers, true);
 }
 
-void execq::impl::ExecutionPool::notifyAllWorkers()
+void ExecutionPool::notifyAllWorkers()
 {
     details::NotifyWorkers(m_workers, false);
 }
 
 // Details
 
-bool execq::impl::details::NotifyWorkers(const std::vector<std::unique_ptr<IThreadWorker>> & workers, const bool single)
+bool details::NotifyWorkers(const std::vector<std::unique_ptr<IThreadWorker>> & workers, const bool single)
 {
     bool notified = false;
     for (const auto & worker : workers)
@@ -44,3 +45,4 @@ bool execq::impl::details::NotifyWorkers(const std::vector<std::unique_ptr<IThre
 
     return notified;
 }
+} // namespace core

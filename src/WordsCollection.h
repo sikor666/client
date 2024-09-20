@@ -18,7 +18,7 @@ public:
     size_t unique() const noexcept;
 
 private:
-    std::mutex mutexWords;
-    std::atomic<size_t> numWords;
-    std::unordered_set<std::string> uniqueWords;
+    std::mutex m_mutex;
+    std::atomic_size_t m_numWords;
+    std::unordered_set<std::string> m_uniqueWords;
 };
