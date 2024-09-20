@@ -15,7 +15,7 @@ int main(int argc, char ** argv)
     {
         WordsCollection wordsCollection;
         {
-            // When destroyed, execution queue waits until all tasks are executed
+            // When destroyed, queue waits until all tasks are executed
             StreamDispatcher streamDispatcher{argv[1], wordsCollection};
             streamDispatcher.run();
         }
