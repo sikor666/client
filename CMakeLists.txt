@@ -17,11 +17,13 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/execq)
 # Add executable
 add_executable(client client.cpp)
 add_executable(server server.cpp)
-add_executable(toilet toilet.cpp WordsCounter.cpp
+add_executable(toilet src/main.cpp
+    src/StreamDispatcher.cpp
+    src/WordsCollection.cpp
+    src/WordsCounter.cpp
+
     src/execq/execq.cpp
     src/execq/ExecutionPool.cpp
-    src/execq/ExecutionStream.cpp
     src/execq/TaskProviderList.cpp
     src/execq/ThreadWorker.cpp
-    src/execq/CancelTokenProvider.cpp
-)
+    src/execq/CancelTokenProvider.cpp)
