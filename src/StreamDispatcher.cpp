@@ -9,9 +9,7 @@ StreamDispatcher::StreamDispatcher(const std::string & filename, WordsCollection
     , m_executionPool{core::CreateExecutionPool()}
     , m_executionQueue{core::CreateConcurrentExecutionQueue<void, WordsCounter>(m_executionPool,
           // Execution function is called in parallel on the next free thread with the next object from the queue
-          [](const std::atomic_bool & isCanceled, WordsCounter && object) {
-              object();
-          })}
+          [](const std::atomic_bool & isCanceled, WordsCounter && object) { object(); })}
     , m_fileStream{std::unique_ptr<FILE, int (*)(FILE *)>{std::fopen(filename.c_str(), "rb"), std::fclose}}
     , m_size{std::fseek(m_fileStream.get(), 0, SEEK_END) == 0 ? std::ftell(m_fileStream.get()) : -1L}
     , m_page{64 * 1024 * 1024}
