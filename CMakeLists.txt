@@ -14,7 +14,6 @@ set(CMAKE_CXX_EXTENSIONS ON)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/core)
 
 # Add executable
-add_executable(server server.cpp)
 add_executable(unique src/main.cpp
     src/StreamDispatcher.cpp
     src/WordsCollection.cpp
