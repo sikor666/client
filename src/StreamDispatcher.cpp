@@ -23,6 +23,7 @@ void StreamDispatcher::run()
     for (long origin = 0, offset = 0; origin < m_size; origin += offset)
     {
         offset = expand(origin + std::min(m_page, m_size - origin)) - origin;
+        // std::cout << "[origin: " << origin << "] [offset: " << offset << "]\n";
 
         m_executionQueue->push(WordsCounter{m_wordsCollection, m_fileStream.get(), origin, offset});
     }

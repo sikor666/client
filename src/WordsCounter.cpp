@@ -1,6 +1,7 @@
 #include "WordsCounter.h"
 #include "WordsCollection.h"
 
+#include <stdexcept>
 #include <unordered_set>
 
 WordsCounter::WordsCounter(WordsCollection & wordsCollection, FILE * fileStream, long streamOrigin, long streamOffset)
@@ -9,8 +10,12 @@ WordsCounter::WordsCounter(WordsCollection & wordsCollection, FILE * fileStream,
 {
     m_streamBuffer.resize(streamOffset + 1);
 
-    std::fseek(fileStream, streamOrigin, SEEK_SET);
-    std::fread(&m_streamBuffer[0], 1, streamOffset, fileStream);
+    if (std::fseek(fileStream, streamOrigin, SEEK_SET) != 0)
+        throw std::runtime_error("Cannot set file position indicator for file stream");
+
+    for (size_t bytesRead = 0;
+         (bytesRead += std::fread(&m_streamBuffer[bytesRead], 1, streamOffset, fileStream)) < streamOffset;)
+        ;
 }
 
 void WordsCounter::operator()()
