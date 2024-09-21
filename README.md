@@ -4,5 +4,5 @@
 cd build
 cmake ..
 make -j4
-./unique file.txt
+./unique_words_counter file.txt
 ```
